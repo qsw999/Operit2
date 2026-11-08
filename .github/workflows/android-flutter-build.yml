@@ -68,11 +68,15 @@ jobs:
   build-android:
     needs: build-android-runtime
     runs-on: windows-2025
-    timeout-minutes: 180
+    timeout-minutes: 300
     env:
       RUSTFLAGS: -Awarnings
       RUST_TOOLCHAIN_VERSION: 1.95.0
       FVM_VERSION: 4.3.0
+      # fork patch: prepare_android_v8.py decodes subprocess output with the
+      # ANSI code page (cp1252) on Windows and dies on UTF-8 bytes.
+      PYTHONUTF8: "1"
+      PYTHONIOENCODING: "utf-8"
 
     steps:
       - name: Checkout
