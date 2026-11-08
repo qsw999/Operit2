@@ -94,6 +94,17 @@ jobs:
         with:
           node-version: 24
 
+      # --- fork patch: generate the gitignored ToolPkg assets that
+      # operit-runtime build.rs embeds; upstream workflow never creates them.
+      - name: Prepare plugin assets (fork patch)
+        shell: pwsh
+        run: |
+          python -m venv .venv
+          npm install --prefix .ci-tools/typescript --no-audit --no-fund typescript@5.9.3
+          corepack enable pnpm
+          corepack pnpm --version
+          .venv\Scripts\python.exe plugins/tools/sync_plugin_packages.py --source runtime --no-hot-reload
+
       - name: Install Java
         uses: actions/setup-java@v4
         with:
